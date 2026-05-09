@@ -23,26 +23,6 @@
 传统的神经网络无法处理变长序列数据，而RNN通过引入循环结构，使得网络能够利用历史信息。然而，标准RNN在处理长序列时容易出现梯度消失或梯度爆炸问题。
 本实验采用**长短期记忆网络（LSTM）**。LSTM 通过引入“门控机制”（输入门、遗忘门、输出门）和细胞状态（Cell State），有效地解决了长距离依赖问题，能够捕捉古诗中句与句之间的语义关联。
 
-LSTM 的核心计算公式如下（以时刻 $t$ 为例）：
-$$
-f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \quad \text{(遗忘门)}
-$$
-$$
-i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i) \quad \text{(输入门)}
-$$
-$$
-\tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C) \quad \text{(候选状态)}
-$$
-$$
-C_t = f_t * C_{t-1} + i_t * \tilde{C}_t \quad \text{(更新细胞状态)}
-$$
-$$
-o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o) \quad \text{(输出门)}
-$$
-$$
-h_t = o_t * \tanh(C_t) \quad \text{(隐藏层输出)}
-$$
-
 **3.2 模型架构**
 本实验构建的 `PoetryRNN` 模型主要包含以下三层：
 1.  **嵌入层（Embedding Layer）**：
@@ -55,10 +35,6 @@ $$
 
 **3.3 损失函数与优化器**
 - **损失函数**：使用**交叉熵损失函数（CrossEntropyLoss）**。该函数结合了 LogSoftmax 和 NLLLoss，适用于多分类任务（即预测下一个字符属于词表中哪个字）。
-    $$
-    \text{Loss} = -\sum_{i} y_i \log(\hat{y}_i)
-    $$
-    其中 $y_i$ 是真实标签，$\hat{y}_i$ 是预测概率。
 - **优化器**：使用 **Adam 优化器**，学习率设为 0.005。Adam 能够自适应地调整学习率，加快收敛速度。
 - **梯度裁剪**：为了防止梯度爆炸，训练过程中使用了 `torch.nn.utils.clip_grad_norm_`，将梯度的范数限制在 5 以内。
 
@@ -81,7 +57,7 @@ $$
 5.  **结果可视化**：使用 Matplotlib 绘制 Loss 曲线，直观展示模型的收敛情况。
 
 ### 5. 实验结果分析
-![alt text](8bb340f0-10a2-4b53-a8c9-d4e8bc260592.png)
+![alt text](losscurve.png)
 #### 5.1 训练过程分析（Loss 曲线）
 根据实验生成的训练损失曲线（Training Loss Curve），我们可以观察到以下趋势：
 
